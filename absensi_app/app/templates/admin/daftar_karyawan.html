@@ -1,0 +1,117 @@
+{% extends "base_admin.html" %}
+
+{% block title %}Daftar Karyawan{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- Flash Message -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}    
+
+    <h2 class="mb-4">Daftar Karyawan</h2>
+
+    <!-- Form Tambah Karyawan -->
+    <div class="card mb-5">
+        <div class="card-header bg-success text-white">
+            Tambah Karyawan Baru
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('main.daftar_karyawan') }}">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="nama" class="form-label">Nama Lengkap</label>
+                        <input type="text" name="nama" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="nip" class="form-label">NIP</label>
+                        <input type="text" name="nip" class="form-control" required>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="jabatan" class="form-label">Jabatan</label>
+                        <input type="text" name="jabatan" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="divisi" class="form-label">Divisi</label>
+                        <input type="text" name="divisi" class="form-control" required>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="role" class="form-label">Role</label>
+                    <select name="role" class="form-select" required>
+                        <option value="karyawan">Karyawan</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-success">Tambah Karyawan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Form Pencarian -->
+    <div class="mb-3">
+        <form method="GET" action="{{ url_for('main.daftar_karyawan') }}">
+            <div class="input-group">
+                <input type="text" name="q" placeholder="Cari nama / NIP..." class="form-control" value="{{ request.args.get('q', '') }}">
+                <button type="submit" class="btn btn-primary">Cari</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Tabel Karyawan -->
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>No</th>
+                <th>Nama Lengkap</th>
+                <th>NIP</th>
+                <th>Jabatan</th>
+                <th>Divisi</th>
+                <th>Email</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for karyawan in karyawan_list %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ karyawan.nama }}</td>
+                <td>{{ karyawan.nip }}</td>
+                <td>{{ karyawan.jabatan }}</td>
+                <td>{{ karyawan.divisi }}</td>
+                <td>{{ karyawan.email }}</td>
+                <td>
+                    <a href="{{ url_for('main.delete_karyawan', id=karyawan.id) }}"
+                       class="btn btn-sm btn-danger"
+                       onclick="return confirm('Yakin ingin menghapus karyawan ini?');">
+                       Hapus
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" class="text-center">Tidak ada data karyawan ditemukan.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

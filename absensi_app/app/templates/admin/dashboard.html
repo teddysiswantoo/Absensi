@@ -1,0 +1,71 @@
+{% extends "base_admin.html" %}
+
+{% block title %}Dashboard Admin{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Dashboard Admin</h2>
+
+    <!-- Ringkasan Data -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Jumlah Karyawan</h5>
+                    <p class="display-6">{{ jumlah_karyawan or 0 }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Absensi Hari Ini</h5>
+                    <p class="display-6">{{ jumlah_absen_hari_ini or 0 }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grafik Kehadiran -->
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <h5 class="card-title">Grafik Kehadiran (Minggu Ini)</h5>
+            <canvas id="chartAbsensi" height="100"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('chartAbsensi').getContext('2d');
+const chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'],
+        datasets: [{
+            label: 'Jumlah Hadir',
+            data: [10, 12, 9, 11, 13],  // TODO: Ganti dengan data dinamis dari Flask
+            fill: false,
+            borderColor: 'rgb(13,110,253)',
+            backgroundColor: 'rgba(13,110,253,0.2)',
+            tension: 0.2
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                precision: 0
+            }
+        }
+    }
+});
+</script>
+{% endblock %}
